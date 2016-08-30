@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Your Dashboard</title>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('.datepicker').datepicker();
+		});
+  	</script>
+  <style>
+  	input {
+  		display: block;
+  	}
+  </style>
+</head>
+<body>
+	<p style="float: right"><a href="/logout">Logout</a></p>
+	<h1>Hello, {{request.session.name}}!</h1>
+	{% if request.session.task %}
+		<h3 style="color: green">Success !Your new appointment/task, {{request.session.task}} has been added!</h3>
+	{% endif %}
+	<h3>Here are your appointments for today, {{today}}:</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>Tasks</th>
+				<th>Time</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for current in todays_appts %}
+			<tr>
+				<td>{{current.task}}</td>
+				<td>{{current.time}}</td>
+				<td>{{current.status}}</td>
+				{% if current.status != "Done" %}
+					<td><a href="/appointments/{{current.id}}">Edit</a> || <a href="/appointments/delete/{{current.id}}">Delete</a></td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+	<h3>Your other appointments:</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>Tasks</th>
+				<th>Date</th>
+				<th>Time</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for future in future_appts %}
+			<tr>
+				<td>{{future.task}}</td>
+				<td>{{future.date}}</td>
+				<td>{{future.time}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<hr>
+	<div id="add">
+		<h3>Add Appointment</h3>
+		{% if request.session.addappt_errors %}
+			{% for error in request.session.addappt_errors %}
+				<p style="color: red">{{error}}</p>
+			{% endfor %}
+		{% endif %}
+		<form action="/addappt" method="post">
+		{% csrf_token %}
+			<label>Date: <input type="date" name="appt_date" class="datepicker"></label>
+			<label>Time: <input type="time" name="appt_time"></label>
+			<label>Tasks: <input type="text" name="appt_tasks"></label>
+			<input type="submit" value="Add">
+		</form>
+	</div>
+</body>
+</html>
