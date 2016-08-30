@@ -5,13 +5,10 @@ import datetime
 
 # Create your views here.
 def index(request):
-	request.session.pop('errors', None)
-	# request.session.pop('name', None)
-	request.session.pop('login_errors', None)
 	request.session.pop('id', None)
-	request.session.pop('addappt_errors', None)
-	request.session.pop('task', None)
-	request.session.pop('update_errors', None)
+	# request.session.pop('errors', None)
+	# request.session.pop('login_errors', None)
+	# request.session.pop('name', None)
 	return render(request, 'appointments/index.html')
 
 def register(request):
